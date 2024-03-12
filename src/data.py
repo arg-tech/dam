@@ -1,11 +1,19 @@
 import json
 from typing import Dict, List
 
+
+def get_file(file_obj):
+    f_name = file_obj.filename    
+    file_obj.save(f_name)
+    file = open(f_name,'r')
+    return f_name
+
 class Data:
     def __init__(self, file_obj):
         self.file_obj = file_obj
         self.f_name = file_obj.filename
         self.file_obj.save(self.f_name)
+        file = open(self.f_name,'r')
 
     def is_valid_json(self):
         ''' check if the file is valid json
@@ -23,8 +31,8 @@ class Data:
         return False
         
 
-    def get_aif(self):
-        if self.is_valid_json(format='xAIF'):
+    def get_aif(self, format='xAIF'):
+        if self.is_valid_json():
             with open(self.f_name) as file:
                 data = file.read()
                 x_aif = json.loads(data)
@@ -129,21 +137,21 @@ class AIF:
 
     def create_entry(self,nodes, edges, prediction, index1, index2):
         if prediction == "RA":
-            node_id = AIF.get_next_max_id(nodes, 'nodeID')
-            edge_id = AIF.get_next_max_id(edges, 'edgeID')		
+            node_id = self.get_next_max_id(nodes, 'nodeID')
+            edge_id = self.get_next_max_id(edges, 'edgeID')		
             nodes.append({'text': 'Default Inference', 'type':'RA','nodeID': node_id})					
             edges.append({'fromID': index1, 'toID': node_id,'edgeID':edge_id})	
-            edge_id = AIF.get_next_max_id(edges, 'edgeID')				
+            edge_id = self.get_next_max_id(edges, 'edgeID')				
             edges.append({'fromID': node_id, 'toID': index2,'edgeID':edge_id})
 
         if prediction == "CA":				
-            node_id = AIF.get_next_max_id(nodes, 'nodeID')
-            edge_id = AIF.get_next_max_id(edges, 'edgeID')
+            node_id = self.get_next_max_id(nodes, 'nodeID')
+            edge_id = self.get_next_max_id(edges, 'edgeID')
             nodes.append({'text': 'Default Conflict', 'type':'CA','nodeID': node_id})				
             edges.append({'fromID': index1, 'toID': node_id,'edgeID':edge_id})
-            edge_id = AIF.get_next_max_id(edges, 'edgeID')
+            edge_id = self.get_next_max_id(edges, 'edgeID')
             edges.append({'fromID': node_id, 'toID': index2,'edgeID':edge_id})
-            node_id = node_id + 1
+            
         return (nodes, edges)
     
     def get_i_node_ya_nodes_for_l_node(self, edges, n_id):
@@ -199,12 +207,5 @@ class AIF:
         # Extract values associated with specified keys from the AIF section dictionary
         # If a key is not present in the dictionary, returns an empty list as the default value
         return tuple(aif_section.get(element) for element in xaif_elements)
-
-
-	
-
-
-
-
 
 

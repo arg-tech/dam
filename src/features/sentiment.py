@@ -1,12 +1,15 @@
-from models import (sentiment_classifier)
+
+from src.models import ModelLoader
+
+modelloader = ModelLoader()
 
 def get_sentiment(text1,text2,sim_score=0.99):
 	agree=False
 	total_entailement1=""
 	total_entailement2=""
-	t1=sentiment_classifier(text1)
+	t1=modelloader.sentiment_classifier(text1)
 	t1=t1[0]
-	t2=sentiment_classifier(text2)
+	t2=modelloader.sentiment_classifier(text2)
 	t2=t2[0]
 
 	if t1['label']=="POSITIVE" and t1['score']>sim_score: 

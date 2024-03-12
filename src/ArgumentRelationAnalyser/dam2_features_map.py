@@ -1,10 +1,12 @@
 
-from src.decompose.get_components import get_functional_components
-from src.sentiment import get_sentiment,sim_feature
-from src.similarity import get_sim
-from src.get_entailemnt import get_entailement
+from src.decompose.get_components import FunctionalComponentsExtractor
+from src.features.sentiment import get_sentiment
+from src.features.similarity import get_sim,sim_feature,get_sim_dam1_2
+import logging
+logging.basicConfig(level=logging.INFO)
 
-class ArgumentRelationAnalyzer:
+
+class Dam2ArgumentRelationAnalyzer:
     def __init__(self):
         pass
 
@@ -25,17 +27,17 @@ class ArgumentRelationAnalyzer:
         return cls._sim_entail_argrel(similarity, sentiment, antonymy)
     @staticmethod
     def _sim_entail_argrel(similarity, entailemt, antonymy):
-        if sim_feature(similarity) and entailemt[0] > 80 and antonymy[0] == 0:
+        logging.info(f"Antonym entailemt and  similarity:  {antonymy}, {entailemt}, {similarity}")
+
+        if sim_feature(similarity) and entailemt and antonymy[0] == 0:
             return "Inference"
-        elif sim_feature(similarity) and entailemt[0] < 10:
+        elif sim_feature(similarity) and not entailemt:
             return "Attack"
-        elif antonymy[0] == 1 and (entailemt[0] < 10 or entailemt[0] > 80):
+        elif antonymy[0] == 1 and (not entailemt or entailemt):
             return "Attack"
         else:
             return "None"
-
-
-
+        
     @staticmethod
     def _final_result(arg_rel2, arg_rel1):
         if arg_rel2 == "Attack" or arg_rel1 == "Attack":
@@ -47,7 +49,8 @@ class ArgumentRelationAnalyzer:
 
     @staticmethod
     def _get_functional_components(text1, text2):
-        return get_functional_components(text1, text2)
+        extractor = FunctionalComponentsExtractor()
+        return extractor.get_rule_based_functional_components((text1, text2))
 
     @staticmethod
     def _get_sentiment(text1, text2):
@@ -55,7 +58,7 @@ class ArgumentRelationAnalyzer:
 
     @staticmethod
     def _get_sim(components1, components2):
-        return get_sim(components1, components2)
+        return get_sim_dam1_2(components1, components2)
     
 
 

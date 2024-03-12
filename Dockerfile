@@ -14,7 +14,7 @@ RUN pip3 install pandas
 RUN pip3 install torch
 RUN pip3 install numpy
 RUN pip3 install transformers
-RUN pip3  install sklearn 
+RUN pip3  install scikit-learn 
 RUN pip3  install nltk
 RUN python3 -m nltk.downloader stopwords
 RUN python3 -m nltk.downloader wordnet

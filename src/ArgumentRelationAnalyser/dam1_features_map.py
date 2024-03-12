@@ -1,9 +1,10 @@
 
-from src.decompose.get_components import get_functional_components
-from src.sentiment import get_sentiment,sim_feature
-from src.similarity import get_sim
 
-class ArgumentRelationAnalyzer:
+from src.decompose.get_components import FunctionalComponentsExtractor
+from src.features.sentiment import get_sentiment
+from src.features.similarity import get_sim_dam1_2, sim_feature
+
+class Dam1ArgumentRelationAnalyzer:
     def __init__(self):
         pass
 
@@ -45,7 +46,8 @@ class ArgumentRelationAnalyzer:
 
     @staticmethod
     def _get_functional_components(text1, text2):
-        return get_functional_components(text1, text2)
+        extractor = FunctionalComponentsExtractor()
+        return extractor.get_rule_based_functional_components((text1, text2))
 
     @staticmethod
     def _get_sentiment(text1, text2):
@@ -53,6 +55,6 @@ class ArgumentRelationAnalyzer:
 
     @staticmethod
     def _get_sim(components1, components2):
-        return get_sim(components1, components2)
+        return get_sim_dam1_2(components1, components2)
 
 
